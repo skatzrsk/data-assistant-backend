@@ -4,6 +4,7 @@ from fastapi import FastAPI, UploadFile
 from transformers import AutoTokenizer, AutoModel
 import pinecone
 import numpy as np
+import os  # <--- Добавлено
 
 app = FastAPI()
 nlp = spacy.load("ru_core_news_sm")
@@ -53,4 +54,5 @@ async def process_query(query: str):
 # Точка входа для запуска сервера
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=10000)
+    port = int(os.environ.get("PORT", 8000))  # <-- Вот это изменение
+    uvicorn.run(app, host="0.0.0.0", port=port)
