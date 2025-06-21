@@ -27,7 +27,7 @@ def init_pinecone():
 
 index = init_pinecone()
 
-# Эндпоинт для загрузки файла с обработкой 2000 фраз
+# Эндпоинт для загрузки файла с обработкой до 2000 фраз
 @app.post("/upload")
 async def upload_file(file: UploadFile):
     try:
