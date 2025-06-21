@@ -1,9 +1,0 @@
-fastapi
-uvicorn
-pandas
-spacy
-transformers
-torch
-pinecone-client
-numpy
-openpyxl
