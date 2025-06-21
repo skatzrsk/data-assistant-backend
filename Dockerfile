@@ -1,8 +1,8 @@
 FROM python:3.9-slim
 
-# Устанавливаем системные зависимости
+# Устанавливаем минимальные системные зависимости
 RUN apt-get update && apt-get install -y \
-    gcc g++ libblas-dev liblapack-dev build-essential \
+    gcc g++ build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Устанавливаем рабочую директорию
