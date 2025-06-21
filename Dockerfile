@@ -1,28 +1,38 @@
 FROM python:3.9-slim
 
-# Устанавливаем минимальные системные зависимости
+# Установка системных зависимостей
 RUN apt-get update && apt-get install -y \
-    gcc g++ build-essential \
+    gcc \
+    g++ \
+    libblas-dev \
+    liblapack-dev \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем рабочую директорию
+# Установка рабочей директории
 WORKDIR /app
 
-# Создаём виртуальное окружение
+# Создание виртуального окружения
 RUN python -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
-# Копируем и устанавливаем зависимости
+# Копирование и установка зависимостей
 COPY requirements.txt .
-RUN pip install --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Загружаем модель spaCy
+# Установка модели SpaCy
 RUN python -m spacy download ru_core_news_sm
 
-# Копируем всё остальное
+# Копирование кода приложения
 COPY . .
 
-# Убираем EXPOSE, так как Render сам управляет портом
-# CMD полагается на переменную PORT от Render
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0"]
+# Установка прав доступа
+RUN useradd -m appuser && chown -R appuser:appuser /app
+USER appuser
+
+# Открытие порта
+EXPOSE 8000
+
+# Запуск приложения с динамическим портом
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
