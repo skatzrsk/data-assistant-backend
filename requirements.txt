@@ -4,6 +4,6 @@ pandas
 spacy
 transformers
 torch
-pinecone-client
+pinecone
 numpy
 openpyxl
