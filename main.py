@@ -4,7 +4,7 @@ from fastapi import FastAPI, UploadFile
 from transformers import AutoTokenizer, AutoModel
 import pinecone
 import numpy as np
-import os  # <--- Добавлено
+import os
 
 app = FastAPI()
 nlp = spacy.load("ru_core_news_sm")
@@ -25,7 +25,6 @@ index = init_pinecone()
 @app.post("/upload")
 async def upload_file(file: UploadFile):
     try:
-        # Чтение Excel файла
         df = pd.read_excel(file.file)
         phrases = df["Фраза"].tolist()
         themes = df["Тематика"].tolist()
@@ -51,8 +50,8 @@ async def process_query(query: str):
     except Exception as e:
         return {"themes": f"Ошибка: {str(e)}"}
 
-# Точка входа для запуска сервера
+# Точка входа для запуска сервера с динамическим портом
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.environ.get("PORT", 8000))  # <-- Вот это изменение
+    port = int(os.getenv("PORT", 8000))  # Берет порт из переменной окружения или 8000 по умолчанию
     uvicorn.run(app, host="0.0.0.0", port=port)
