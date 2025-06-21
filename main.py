@@ -9,12 +9,22 @@ app = FastAPI()
 nlp = spacy.load("ru_core_news_sm")
 tokenizer = AutoTokenizer.from_pretrained("bert-base-multilingual-cased")
 model = AutoModel.from_pretrained("bert-base-multilingual-cased")
-pinecone.init(api_key="pcsk_32sHi8_7c9KNPRgvQq54K6ZJVRcz6XxMRui6TMx53ZUwJiT4qzM8x1qWhoV1Vdfo4H2PuT", environment="us-east-1-aws")
-index = pinecone.Index("phrases")
 
+# Функция инициализации Pinecone
+def init_pinecone():
+    pinecone.init(
+        api_key="pcsk_32sHi8_7c9KNPRgvQq54K6ZJVRcz6XxMRui6TMx53ZUwJiT4qzM8x1qWhoV1Vdfo4H2PuT",
+        environment="us-east-1-aws"
+    )
+    return pinecone.Index("phrases")
+
+index = init_pinecone()
+
+# Эндпоинт для загрузки файла
 @app.post("/upload")
 async def upload_file(file: UploadFile):
     try:
+        # Чтение Excel файла
         df = pd.read_excel(file.file)
         phrases = df["Фраза"].tolist()
         themes = df["Тематика"].tolist()
@@ -28,6 +38,7 @@ async def upload_file(file: UploadFile):
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
+# Эндпоинт для обработки запроса
 @app.post("/query")
 async def process_query(query: str):
     try:
@@ -38,3 +49,8 @@ async def process_query(query: str):
         return {"themes": matched_themes}
     except Exception as e:
         return {"themes": f"Ошибка: {str(e)}"}
+
+# Точка входа для запуска сервера
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
