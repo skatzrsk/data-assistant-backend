@@ -23,8 +23,6 @@ RUN python -m spacy download ru_core_news_sm
 # Копируем всё остальное
 COPY . .
 
-# Порт: Render задаст через переменную окружения PORT
-EXPOSE 8000
-
-# Команда запуска с вычислением порта через shell
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port $PORT"]
+# Убираем EXPOSE, так как Render сам управляет портом
+# CMD полагается на переменную PORT от Render
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0"]
