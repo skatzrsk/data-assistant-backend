@@ -1,8 +1,8 @@
 fastapi
 uvicorn
 pandas
-spacy
-transformers
+spacy==3.7.2
+transformers==4.41.0
 torch
 pinecone
 numpy
