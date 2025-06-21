@@ -84,6 +84,8 @@ async def process_query(query: str):
 if __name__ == "__main__":
     try:
         port = int(os.getenv("PORT", 8000))  # Динамический порт от Render
+        print(f"Starting server on port {port}")
+        import uvicorn
         uvicorn.run(app, host="0.0.0.0", port=port)
     except Exception as e:
         print(f"Server failed to start: {e}")
